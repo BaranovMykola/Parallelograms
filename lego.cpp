@@ -2,9 +2,6 @@
 
 
 
-Lego::Lego()
-{
-}
 
 Lego::Lego(unsigned short _type, unsigned short _lenght):
 	type(_type),
@@ -12,13 +9,8 @@ Lego::Lego(unsigned short _type, unsigned short _lenght):
 {
 	if (lenght > max_lenght)
 	{
-        //throw exception("Exceeded max lenght", 3);
+        throw "Exceeded max lenght";
 	}
-}
-
-
-Lego::~Lego()
-{
 }
 
 ostream& operator<<(ostream& stream, const Lego& output)

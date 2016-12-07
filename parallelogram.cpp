@@ -16,7 +16,7 @@ Parallelogram::Parallelogram(Lego _left, Lego _top, Lego _right, Lego _bottom):
 	piece[RIGHT] = _right;
 	piece[BOTTOM] = _bottom;
 	trySides();
-	current = new Random;
+	current = make_unique<Random>(Random());
 	current->getMonochrome(*this);
 }
 
@@ -27,7 +27,8 @@ Parallelogram::Parallelogram(const Parallelogram& _Right):
 	{
 		piece[i] = _Right.piece[i];
 	}
-	copyState(_Right.current);
+	current = make_unique<Random>(Random());
+	current->getMonochrome(*this);
 }
 
 Parallelogram::Parallelogram(bool) :
@@ -42,15 +43,10 @@ Parallelogram::Parallelogram(bool) :
 	}
 	piece[TOP].lenght = piece[BOTTOM].lenght;
 	piece[LEFT].lenght = piece[RIGHT].lenght;
-	current = new Random;
+	current = make_unique<Random>(Random());
 	current->getMonochrome(*this);
 }
 
-
-Parallelogram::~Parallelogram()
-{
-	delete current;
-}
 
 unsigned short Parallelogram::getPredominantColor() const
 {
@@ -94,7 +90,9 @@ Parallelogram& Parallelogram::operator=(const Parallelogram& _Right)
 		{
 			piece[i] = _Right.piece[i];
 		}
-		copyState(_Right.current);
+		current.reset();
+		current = make_unique<Random>(Random());
+		current->getMonochrome(*this);
 	}
 	return *this;
 }
@@ -131,17 +129,19 @@ void Parallelogram::trySides() const
 	}
 }
 
-void Parallelogram::copyState(BaseState* _Right)
+/*void Parallelogram::copyState(unique_ptr<Parallelogram::BaseState>& _Right)
 {
 	if (typeid(*_Right) == typeid(Parallelogram::Monochrome))
 	{
-		current = new Monochrome;
+		current.reset();
+		current = make_unique<BaseState>(Monochrome());
 	}
 	else
 	{
-		current = new Random;
+		current.reset();
+		current = make_unique<BaseState>(Random());
 	}
-}
+}*/
 
 ostream & operator<<(ostream& stream, const Parallelogram& output)
 {

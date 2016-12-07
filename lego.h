@@ -2,7 +2,6 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
-#include <exception>
 
 using std::ostream;
 using std::istream;
@@ -16,9 +15,9 @@ struct Lego
 {
 	unsigned short type;
 	unsigned short lenght;
-	Lego();
+	Lego() = default;
 	Lego(unsigned short, unsigned short);
-	~Lego();
+	~Lego() = default;
 	friend ostream& operator<<(ostream&, const Lego&);
 	friend istream& operator>>(istream&, Lego&);
 };
