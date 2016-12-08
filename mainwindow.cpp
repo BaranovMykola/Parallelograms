@@ -2,15 +2,9 @@
 
 void MainWindow::resetProgresBar()const
 {   //set PRogressBar to 0
-    start->setEnabled(true);
-    progres->setEnabled(false);
-    progres->setValue(0);
-}
-
-QString MainWindow::getTextAutomaticButton()
-{   //gives text for button
-    //return dynamicText[dynamicTextIndex++%dynamicTextQuantity];
-    return "Auto";
+    singleTransformButton->setEnabled(true);
+    tranformProgressStatus->setEnabled(false);
+    tranformProgressStatus->setValue(0);
 }
 
 void MainWindow::drawBorder(QPixmap& pixmap)
@@ -28,24 +22,22 @@ void MainWindow::drawBorder(QPixmap& pixmap)
 
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent),
-      current(0),
-      firstRandom(0),
-      isAutomaticChange(false),
-      dynamicTextIndex(0)
+      currentShape(0),
+      firstRandom(0)
 {
     srand(time(0));
 //Layouts and objects:
-    info = new QLabel(this);
-    info->setText("Set quantity of parallelograms");
-    input = new QLineEdit(this);
-    generate = new QPushButton("Generate", this);
+    generateInfoText = new QLabel(this);
+    generateInfoText->setText("Set quantity of parallelograms");
+    numberToGenerate = new QLineEdit(this);
+    generateButton = new QPushButton("Generate", this);
 
     top = new QHBoxLayout;
-    top->addWidget(info);
-    top->addWidget(input);
-    top->addWidget(generate);
+    top->addWidget(generateInfoText);
+    top->addWidget(numberToGenerate);
+    top->addWidget(generateButton);
 
-    lst = new QComboBox(this);
+    parallelogramList = new QComboBox(this);
     mainPanel = new QLabel(this);
     mainPanel->resize(max_lenght*k+xAngle+borderWidth*2, max_lenght*k+xAngle+deltaBorder+borderWidth*2);
 
@@ -53,31 +45,31 @@ MainWindow::MainWindow(QWidget *parent)
     drawBorder(pixmap);
     mainPanel->setPixmap(pixmap);
 
-    automatic = new QPushButton(getTextAutomaticButton(), this);
-    start = new QPushButton("Transform", this);
-    statusRes = new QLabel("Resistibility", this);
-    resis = new QLabel(this);
+    automaticTransformButton = new QPushButton("Auto", this);
+    singleTransformButton = new QPushButton("Transform", this);
+    resistybilityInfoText = new QLabel("Resistibility", this);
+    resistybilityNumber = new QLabel(this);
 
     buttonsBar = new QHBoxLayout;
     middle = new QVBoxLayout();
-    middle->addWidget(lst);
+    middle->addWidget(parallelogramList);
     middle->addWidget(mainPanel);
-    buttonsBar->addWidget(start);
-    buttonsBar->addWidget(automatic);
-    buttonsBar->addWidget(statusRes);
-    buttonsBar->addWidget(resis);
+    buttonsBar->addWidget(singleTransformButton);
+    buttonsBar->addWidget(automaticTransformButton);
+    buttonsBar->addWidget(resistybilityInfoText);
+    buttonsBar->addWidget(resistybilityNumber);
 
-    frequencyAuto = new QSlider(Qt::Horizontal, this);
-    frequencyAuto->setRange(0, maxFrequencyPosition);
-    frequencyAuto->setValue(startFrequencyPosition);
-    progres = new QProgressBar(this);
-    progres->setRange(0,0);
-    progres->setEnabled(false);
-    progres->setValue(0);
+    frequencyTransform = new QSlider(Qt::Horizontal, this);
+    frequencyTransform->setRange(0, maxFrequencyPosition);
+    frequencyTransform->setValue(startFrequencyPosition);
+    tranformProgressStatus = new QProgressBar(this);
+    tranformProgressStatus->setRange(0,0);
+    tranformProgressStatus->setEnabled(false);
+    tranformProgressStatus->setValue(0);
 
     bottom = new QHBoxLayout;
-    bottom->addWidget(frequencyAuto);
-    bottom->addWidget(progres);
+    bottom->addWidget(frequencyTransform);
+    bottom->addWidget(tranformProgressStatus);
 
     all = new QVBoxLayout();
     all->addLayout(top);
@@ -88,10 +80,10 @@ MainWindow::MainWindow(QWidget *parent)
     setLayout(all);
 
 //connect:
-    connect(generate, &QPushButton::clicked, this, &MainWindow::generatShapes);
-    connect(lst, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated), this, &MainWindow::drawShape);
-    connect(start, &QPushButton::clicked, this, &MainWindow::changeSape);
-    connect(automatic, &QPushButton::clicked, this, &MainWindow::autoChangeShape);
+    connect(generateButton, &QPushButton::clicked, this, &MainWindow::generatShapes);
+    connect(parallelogramList, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated), this, &MainWindow::drawShape);
+    connect(singleTransformButton, &QPushButton::clicked, this, &MainWindow::changeSape);
+    connect(automaticTransformButton, &QPushButton::clicked, this, &MainWindow::autoChangeShape);
 
 }
 
@@ -107,8 +99,8 @@ MainWindow::~MainWindow()
 void MainWindow::updateResistibility()
 {   //show resistibility for current shape
     char _ch[16];
-    itoa(data[current].getResistibility(), _ch, 10);
-    resis->setText(_ch);
+    itoa(data[currentShape].getResistibility(), _ch, 10);
+    resistybilityNumber->setText(_ch);
 }
 
 void MainWindow::delay(double sec)
@@ -122,7 +114,7 @@ void MainWindow::delay(double sec)
 
 void MainWindow::drawShape(int shape)
 {   //draw shape
-    current = shape;
+    currentShape = shape;
     updateResistibility();
     Parallelogram S = data[shape];
 //gets shape size:
@@ -161,14 +153,14 @@ void MainWindow::drawShape(int shape)
 void MainWindow::generatShapes()
 {   //generates n shapes
     int quantity;
-    QString text = input->text();
+    QString text = numberToGenerate->text();
     quantity = text.toInt();
     for(int i =0;i<quantity;++i)
     {
         data.push_back(Parallelogram(true));
         char _ch[16];
         itoa(data.size()-1, _ch, 10);
-        lst->addItem(_ch);
+        parallelogramList->addItem(_ch);
     }
 
 //partitions by monohrome type:
@@ -178,57 +170,54 @@ void MainWindow::generatShapes()
     char _ch[16];
     firstRandom = distance(data.begin(), last);
     itoa(firstRandom, _ch, 10);
-    resis->setText(_ch);
+    resistybilityNumber->setText(_ch);
     char show[60] = "First random: ";
     strcat(show, _ch);
-    resis->setText(show);
+    resistybilityNumber->setText(show);
 
 }
 
 void MainWindow::changeSape()
 {   //makes monohrome current shape
-    isAutomaticChange = !isAutomaticChange;//don't let use more than two funtions in a same time
-    automatic->setText(getTextAutomaticButton());
-    while (!data[current].getType())
+    if(data.size() == 0)
     {
-        if(!isAutomaticChange)//if there are active function
-        {
-            isAutomaticChange = !isAutomaticChange;
-            automatic->setText(getTextAutomaticButton());
-            return ;//stop this and other function
-        }
-        data[current].tryMonohrome();
-        drawShape(current);
-        updateResistibility();
-        delay(static_cast<double>(frequencyAuto->value())/(frequencyAuto->maximum()/maxIntervalTime));
+        return ;
     }
-    automatic->setText(getTextAutomaticButton());
+    automaticTransformButton->setEnabled(false);
+    singleTransformButton->setEnabled(false);
+    while (!data[currentShape].getType())
+    {
+        data[currentShape].tryMonohrome();
+        drawShape(currentShape);
+        updateResistibility();
+        delay(static_cast<double>(frequencyTransform->value())/(frequencyTransform->maximum()/maxIntervalTime));
+    }
+    automaticTransformButton->setEnabled(true);
+    singleTransformButton->setEnabled(true);
 }
 
 void MainWindow::autoChangeShape()
 {   //makes monohrome all shapes
-    automatic->setText(getTextAutomaticButton());
-    isAutomaticChange = !isAutomaticChange;//don't let use more than two funtions in a same time
-    start->setEnabled(false);
-    progres->setEnabled(true);
-    progres->setRange(0, data.size()-firstRandom-1);// range of nonmonohrome shapes
+    if(data.size() == 0)
+    {
+        return ;
+    }
+    automaticTransformButton->setEnabled(false);
+    singleTransformButton->setEnabled(false);
+    tranformProgressStatus->setEnabled(true);
+    tranformProgressStatus->setRange(0, data.size()-firstRandom-1);// range of nonmonohrome shapes
     int startPosition = firstRandom;
     for(;firstRandom<data.size();++firstRandom)
     {
         while(!data[firstRandom].getType())
         {
-            if(!isAutomaticChange)//if there are active function
-            {
-                isAutomaticChange = !isAutomaticChange;
-                resetProgresBar();
-                return ;//stop this and other function
-            }
             data[firstRandom].tryMonohrome();
             drawShape(firstRandom);
-            delay(static_cast<double>(frequencyAuto->value())/(frequencyAuto->maximum()/maxIntervalTime));
+            delay(static_cast<double>(frequencyTransform->value())/(frequencyTransform->maximum()/maxIntervalTime));
         }
-        progres->setValue(firstRandom-startPosition);// index of current shape in a current range (see bellow)
+        tranformProgressStatus->setValue(firstRandom-startPosition);// index of current shape in a current range (see bellow)
     }
     resetProgresBar();
-    automatic->setText(getTextAutomaticButton());
+    automaticTransformButton->setEnabled(true);
+    singleTransformButton->setEnabled(true);
 }

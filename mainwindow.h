@@ -54,32 +54,36 @@ class MainWindow : public QWidget
     QHBoxLayout* bottom;
     QVBoxLayout* all;
 
-    QLabel* info;
-    QLabel* statusRes;
-    QPushButton* start;
+    QLabel* generateInfoText;
+    QLabel* resistybilityInfoText;
     QLabel* mainPanel;
+    QLabel* resistybilityNumber;
 
-    QComboBox* lst;
-    QLineEdit* input;
-    QPushButton* generate;
-    QPushButton* automatic;
-    QLabel* resis;
-    QProgressBar* progres;
+    QPushButton* singleTransformButton;
+    QPushButton* generateButton;
+    QPushButton* automaticTransformButton;
+
+    QComboBox* parallelogramList;
+
+    QLineEdit* numberToGenerate;
+
+    QProgressBar* tranformProgressStatus;
+
+    QSlider* frequencyTransform;
+
     vector<Parallelogram> data;
-    QSlider* frequencyAuto;
-    int current;
+    int currentShape;
     int firstRandom;
-    bool isAutomaticChange;
-    int dynamicTextIndex;
 
     void resetProgresBar()const;
-    QString getTextAutomaticButton();
     void drawBorder(QPixmap&);
+
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void updateResistibility();
     void delay(double);
+
 public slots:
     void drawShape(int);
     void generatShapes();
