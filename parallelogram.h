@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "Lego.h"
 #include <memory>
+#include "AbstractParallelogramState.h"
 
 enum PICE{LEFT, TOP, RIGHT, BOTTOM};
 const int sides = 4;
@@ -30,55 +31,11 @@ public:
 
 private:
 	Lego piece[4];
-	class BaseState;
 	unsigned int resistibility;
-	friend class BaseState;
-	class BaseState
-	{
-	public:
-		virtual ~BaseState() = default;
-		virtual void printState(ostream&)const = 0;
-		virtual void getMonochrome(Parallelogram&)const = 0;
-		virtual bool isMonochrome()const = 0;
-	};
-	class Monochrome : public BaseState
-	{
-	public:
-		void printState(ostream& stream)const
-		{
-			stream << "Monochorme parallelogram";
-		}
-		void getMonochrome(Parallelogram&)const
-		{
-            throw "Sharpe is already monochrome";
-		}
-		bool isMonochrome()const
-		{
-			return true;
-		}
-	};
-	class Random : public BaseState
-	{
-	public:
-		void printState(ostream& stream)const
-		{
-			stream << "Random parallelogram";
-		}
-		void getMonochrome(Parallelogram& _object)const
-		{
-			if (_object.isMonochrome())
-			{
-				_object.current.reset();
-				_object.current = make_unique<Monochrome>(Monochrome());
-			}
-		}
-		bool isMonochrome()const
-		{
-			return false;
-		}
-	};
+	friend class AbstractParallelogramState;
+	friend class RandomParalellogram;
 
-	unique_ptr<BaseState> current;
+	unique_ptr<AbstractParallelogramState> current;
 
 	bool isMonochrome()const;
 	void trySides()const;

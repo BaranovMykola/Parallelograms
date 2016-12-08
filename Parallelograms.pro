@@ -18,9 +18,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     lego.cpp \
     parallelogram.cpp \
-    clickedlabel.cpp
+    clickedlabel.cpp \
+    AbstractParallelogramState.cpp \
+    MonochromeParallelogram.cpp \
+    RandomParallelogram.cpp
 
 HEADERS  += mainwindow.h \
     lego.h \
     parallelogram.h \
-    clickedlabel.h
+    clickedlabel.h \
+    AbstractParallelogramState.h \
+    MonochromeParallelogram.h \
+    RandomParallelogram.h

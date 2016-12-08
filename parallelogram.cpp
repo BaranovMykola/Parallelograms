@@ -1,9 +1,10 @@
 #include "Parallelogram.h"
-
+#include "MonochromeParallelogram.h"
+#include "RandomParallelogram.h"
 
 
 Parallelogram::Parallelogram():
-	current(new Random),
+	current(new RandomParalellogram),
 	resistibility(0)
 {
 }
@@ -16,7 +17,7 @@ Parallelogram::Parallelogram(Lego _left, Lego _top, Lego _right, Lego _bottom):
 	piece[RIGHT] = _right;
 	piece[BOTTOM] = _bottom;
 	trySides();
-	current = make_unique<Random>(Random());
+	current = make_unique<RandomParalellogram>(RandomParalellogram());
 	current->getMonochrome(*this);
 }
 
@@ -27,7 +28,7 @@ Parallelogram::Parallelogram(const Parallelogram& _Right):
 	{
 		piece[i] = _Right.piece[i];
 	}
-	current = make_unique<Random>(Random());
+	current = make_unique<RandomParalellogram>(RandomParalellogram());
 	current->getMonochrome(*this);
 }
 
@@ -43,7 +44,7 @@ Parallelogram::Parallelogram(bool) :
 	}
 	piece[TOP].lenght = piece[BOTTOM].lenght;
 	piece[LEFT].lenght = piece[RIGHT].lenght;
-	current = make_unique<Random>(Random());
+	current = make_unique<RandomParalellogram>(RandomParalellogram());
 	current->getMonochrome(*this);
 }
 
@@ -91,7 +92,7 @@ Parallelogram& Parallelogram::operator=(const Parallelogram& _Right)
 			piece[i] = _Right.piece[i];
 		}
 		current.reset();
-		current = make_unique<Random>(Random());
+		current = make_unique<RandomParalellogram>(RandomParalellogram());
 		current->getMonochrome(*this);
 	}
 	return *this;
@@ -139,7 +140,7 @@ void Parallelogram::trySides() const
 	else
 	{
 		current.reset();
-		current = make_unique<BaseState>(Random());
+		current = make_unique<BaseState>(RandomParalellogram());
 	}
 }*/
 
