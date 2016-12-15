@@ -8,6 +8,7 @@ QT       += core gui
 
 CONFIG += c++14
 
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Parallelograms
@@ -30,3 +31,5 @@ HEADERS  += mainwindow.h \
     AbstractParallelogramState.h \
     MonochromeParallelogram.h \
     RandomParallelogram.h
+
+DISTFILES +=

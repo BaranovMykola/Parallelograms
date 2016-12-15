@@ -1,39 +1,42 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "clickedlabel.h"
+#include "parallelogram.h"
+
+#include <vector>
+#include <iostream>
+#include <iterator>
+#include <ctime>
+#include <memory>
+#include <cmath>
+
 #include <QWidget>
 #include <QLabel>
 #include <QComboBox>
 #include <QPainter>
 #include <QPixmap>
 #include <QPropertyAnimation>
-#include <vector>
 #include <QLineEdit>
 #include <QPushButton>
-#include "clickedlabel.h"
 #include <QBoxLayout>
 #include <algorithm>
-#include "parallelogram.h"
 #include <QDebug>
 #include <QPen>
 #include <QPoint>
 #include <QTime>
-#include <iostream>
-#include <iterator>
 #include <QCoreApplication>
 #include <QEventLoop>
 #include <QSlider>
-#include <ctime>
 #include <QProgressBar>
-#include <memory>
 #include <QString>
-#include <cmath>
+#include <QApplication>
+#include <QDesktopWidget>
 
 using std::vector;
-
-const int k = 30;
 const int xAngle = 100;
 const QPoint A(100,10);
+const double resolution = 0.5;
 const QPen brushes[3] = {QColor("#FF0000"), QColor("#00FF00"), QColor("#0000FF")};
 const int penWeight = 3;
 const double maxIntervalTime = 1;
@@ -74,6 +77,7 @@ class MainWindow : public QWidget
     vector<Parallelogram> data;
     int currentShape;
     int firstRandom;
+    int coeficient;
 
     void resetProgresBar()const;
     void drawBorder(QPixmap&);

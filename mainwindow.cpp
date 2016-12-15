@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     srand(time(0));
 //Layouts and objects:
+    QDesktopWidget widget;
+    QRect mainScreenSize = widget.availableGeometry(widget.primaryScreen());
+    coeficient = (mainScreenSize.height()*resolution - (xAngle+borderWidth*2))/max_lenght;
     generateInfoText = new QLabel(this);
     generateInfoText->setText("Set quantity of parallelograms");
     numberToGenerate = new QLineEdit(this);
@@ -39,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     parallelogramList = new QComboBox(this);
     mainPanel = new QLabel(this);
-    mainPanel->resize(max_lenght*k+xAngle+borderWidth*2, max_lenght*k+xAngle+deltaBorder+borderWidth*2);
+    mainPanel->resize(max_lenght*coeficient+xAngle+borderWidth*2, max_lenght*coeficient+xAngle+deltaBorder+borderWidth*2);
 
     QPixmap pixmap(mainPanel->width(), mainPanel->height());
     drawBorder(pixmap);
@@ -122,16 +125,16 @@ void MainWindow::drawShape(int shape)
     int ShapeHeight = S.getPiece(1).lenght;
 
 //gets margins:
-    int marginLeft = (mainPanel->width()-ShapeWidth*k+xAngle)/2;
-    int marginTop = (mainPanel->height()-ShapeHeight*k)/2;
+    int marginLeft = (mainPanel->width()-ShapeWidth*coeficient+xAngle)/2;
+    int marginTop = (mainPanel->height()-ShapeHeight*coeficient)/2;
 
 //make poins:
     QPoint marks[4];
     enum POINT{A,B,C,D};
     marks[A] = QPoint(marginLeft, marginTop);
-    marks[B] = QPoint(marks[A].x()+ShapeWidth*k, marks[A].y());
-    marks[C] = QPoint(marks[B].x()-xAngle, marks[B].y()+ShapeHeight*k);
-    marks[D] = QPoint(marks[A].x()-xAngle, marks[A].y()+ShapeHeight*k);
+    marks[B] = QPoint(marks[A].x()+ShapeWidth*coeficient, marks[A].y());
+    marks[C] = QPoint(marks[B].x()-xAngle, marks[B].y()+ShapeHeight*coeficient);
+    marks[D] = QPoint(marks[A].x()-xAngle, marks[A].y()+ShapeHeight*coeficient);
 
 //make field to draw
     QPixmap pixmap(mainPanel->width(),mainPanel->height());
